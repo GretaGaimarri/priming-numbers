@@ -37,7 +37,7 @@ trial_sequence = data.TrialHandler(nReps=1, method='random', trialList=adjective
 def run_instructions():
     instructions.draw()
     win.flip()
-    keys = event.waitKeys()  # Aspetta la pressione di un tasto per iniziare
+    keys = event.waitKeys()  
     if 'escape' in keys:
         core.quit()
 
@@ -61,7 +61,7 @@ def run_trial(prime_text, bigsmall_value, congruent):
     if 'escape' in event.getKeys():
         core.quit()
 
-    # Presentazione del numero
+    # Number
     if congruent:
         if bigsmall_value == 1:
             number = random.choice([6, 7, 8, 9])  # Numeri maggiori di 5
