@@ -2,7 +2,7 @@ from psychopy import visual, core, event, logging, data
 import pandas as pd
 import random
 
-# Carica gli aggettivi dal file Excel
+# Load stimuli
 adjectives = pd.read_excel(r'C:\Users\greta\OneDrive\Desktop\pavlovia\adjectives.xlsx')
 adjectives_congruent = adjectives.copy()
 adjectives_congruent['congruent'] = 1
