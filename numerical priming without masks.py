@@ -110,7 +110,7 @@ for trial in trial_sequence:
     trial_data.append((prime_text, big_small_value, congruent, response[0], reaction_time, accuracy))
 
 # Save results
-with open('data.csv', 'w') as data_file:
+with open('datapriming.csv', 'w') as data_file:
     data_file.write('prime,big_small,congruent,response,reaction_time,accuracy\n')
     for data_point in trial_data:
         data_file.write(f"{data_point[0]},{data_point[1]},{data_point[2]},{data_point[3]},{data_point[4]:.4f},{data_point[5]}\n")
