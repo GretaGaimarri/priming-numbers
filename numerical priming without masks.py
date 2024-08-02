@@ -12,11 +12,11 @@ adjectives_incongruent['congruent'] = 0
 
 adjectives_combined = pd.concat([adjectives_congruent, adjectives_incongruent])
 
-# Configurazione della finestra
+# Window fullscreen
 win = visual.Window(fullscr=True, screen=0, allowGUI=True, allowStencil=False,
                     monitor='testMonitor', color=[0, 0, 0], colorSpace='rgb', blendMode='avg', useFBO=True)
 
-# Creazione degli stimoli
+# Instructions, fixation cross and stimuli
 instructions = visual.TextStim(win=win, name='instructions', 
                                text="Benvenuto/a all'esperimento.\n\nPremi 't' se pensi che il numero sia maggiore di 5.\n"
                                     "Premi 'v' se pensi che il numero sia minore di 5.\n\n"
@@ -31,7 +31,7 @@ prime = visual.TextStim(win=win, name='prime', text='', font='Arial', pos=(0, 0)
 number_stim = visual.TextStim(win=win, name='number', text='', font='Arial', pos=(0, 0), height=0.2, wrapWidth=None, ori=0,
                               color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
-# Definisci la sequenza dei trial
+# Random generation of trials
 trial_sequence = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials')
 
 def run_instructions():
@@ -109,7 +109,7 @@ for trial in trial_sequence:
     response, reaction_time, accuracy = run_trial(prime_text, big_small_value, congruent)
     trial_data.append((prime_text, big_small_value, congruent, response[0], reaction_time, accuracy))
 
-# Salva i dati
+# Save results
 with open('data.csv', 'w') as data_file:
     data_file.write('prime,big_small,congruent,response,reaction_time,accuracy\n')
     for data_point in trial_data:
