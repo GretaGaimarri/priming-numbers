@@ -33,13 +33,13 @@ win = visual.Window(fullscr=True, screen=0, allowGUI=True, allowStencil=False,
 
 # General Instructions
 general_instructions = visual.TextStim(win=win, name='general_instructions', 
-                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nQuando sei pronto/a premi un tasto qualsiasi e appariranno le istruzioni.",
+                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nIl compito è divisp in due parti tra le quali ci sarà una breve pausa. \n\nQuando sei pronto/a premi un tasto qualsiasi per leggere le istruzioni.",
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
 # Specific Instructions
 instructions_run_one = visual.TextStim(win=win, name='instructions_run_one', 
-                               text="Ecco le sitruzioni: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
+                               text="Ecco le istruzioni: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
                                     "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
                                     "Ricorda che sei libero/a di abbandonare l'esperimento in qualsiasi momento, premendo il tasto 'escape'.\n\n"
                                     "Premi un tasto per iniziare.",
@@ -47,7 +47,7 @@ instructions_run_one = visual.TextStim(win=win, name='instructions_run_one',
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
 instructions_run_two = visual.TextStim(win=win, name='instructions_run_two', 
-                               text="Istruzioni per la seconda parte: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
+                               text="Due gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
                                     "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
                                     "Ricorda che sei libero/a di abbandonare l'esperimento in qualsiasi momento, premendo il tasto 'escape'.\n\n"
                                     "Premi un tasto per iniziare.",
