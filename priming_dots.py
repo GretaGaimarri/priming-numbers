@@ -3,7 +3,7 @@ from psychopy import visual, core, event, logging, data
 import random
 
 # Load adjectives
-adjectives = pd.read_excel(r'C:\Users\greta\OneDrive\Desktop\pavlovia\adjectives.xlsx')
+adjectives = pd.read_excel(r'C:djectives.xlsx')
 
 # Create duplicated trials for each word-opposite pair with color variations
 adjectives_white_word = adjectives.copy()
