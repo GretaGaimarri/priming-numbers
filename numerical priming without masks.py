@@ -4,7 +4,7 @@ import pandas as pd
 import random
 
 # Load adjectives
-adjectives = pd.read_excel(r'C:\Users\greta\OneDrive\Desktop\pavlovia\adjectives.xlsx')
+adjectives = pd.read_excel(r'C:adjectives.xlsx')
 adjectives_congruent = adjectives.copy()
 adjectives_congruent['congruent'] = 1
 
