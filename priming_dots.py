@@ -1,9 +1,10 @@
-import pandas as pd
-from psychopy import visual, core, event, logging, data
+
 import random
+from psychopy import visual, core, event, logging, data
+import pandas as pd
 
 # Load adjectives
-adjectives = pd.read_excel(r'C:djectives.xlsx')
+adjectives = pd.read_excel(r'C:\Users\greta\OneDrive\Desktop\pavlovia\adjectives.xlsx')
 
 # Create duplicated trials for each word-opposite pair with color variations
 adjectives_white_word = adjectives.copy()
@@ -26,25 +27,34 @@ adjectives_incongruent['congruent'] = 0
 
 adjectives_combined = pd.concat([adjectives_congruent, adjectives_incongruent])
 
-# Ensure that 'congruent' column is present
-print(adjectives_combined.head())  # Print the first few rows to verify
-
 # Window settings
 win = visual.Window(fullscr=True, screen=0, allowGUI=True, allowStencil=False,
                     monitor='testMonitor', color=[0, 0, 0], colorSpace='rgb', blendMode='avg', useFBO=True)
 
-# Instructions, Pause, Fixation cross, prime and target
-instructions = visual.TextStim(win=win, name='instructions', 
-                               text="Benvenuto/a all'esperimento.\n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
+# General Instructions
+general_instructions = visual.TextStim(win=win, name='general_instructions', 
+                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nQuando sei pronto/a premi un tasto qualsiasi e appariranno le istruzioni.",
+                               font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
+                               color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+# Specific Instructions
+instructions_run_one = visual.TextStim(win=win, name='instructions_run_one', 
+                               text="Ecco le sitruzioni: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
                                     "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
-                                    "Sei libero/a di abbandonare l'esperimento in qualsiasi momento, prememndo il tasto 'escape'.\n\n"
+                                    "Ricorda che sei libero/a di abbandonare l'esperimento in qualsiasi momento, premendo il tasto 'escape'.\n\n"
                                     "Premi un tasto per iniziare.",
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
-pause_text = visual.TextStim(win=win, name='pause_text',
-                             text="Fine prima parte.\n\n" "Premi un qualsiasi pulsante per iniziare la seconda parte dell'esperimento.",
-                             font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
-                             color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+instructions_run_two = visual.TextStim(win=win, name='instructions_run_two', 
+                               text="Istruzioni per la seconda parte: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
+                                    "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
+                                    "Ricorda che sei libero/a di abbandonare l'esperimento in qualsiasi momento, premendo il tasto 'escape'.\n\n"
+                                    "Premi un tasto per iniziare.",
+                               font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
+                               color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+# Fixation cross
 fixation = visual.TextStim(win=win, name='fixation', text='+', font='Arial', pos=(0, 0), height=0.2, wrapWidth=None, ori=0,
                            color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
@@ -57,25 +67,28 @@ prime_bottom = visual.TextStim(win=win, name='prime_bottom', text='', font='Aria
 # Create trial sequence
 trial_sequence = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials')
 
-def run_instructions():
+def show_general_instructions():
+    general_instructions.draw()
+    win.flip()
+    keys = event.waitKeys()
+    if 'escape' in keys:
+        core.quit()
+
+def run_instructions(instructions):
     instructions.draw()
     win.flip()
     keys = event.waitKeys() 
     if 'escape' in keys:
         core.quit()
 
-def run_pause():
+def show_pause():
     pause_text.draw()
     win.flip()
-    keys = event.waitKeys()  
+    keys = event.waitKeys()
     if 'escape' in keys:
         core.quit()
 
 def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_value, congruent, reverse=False):
-    # Check for escape key
-    if 'escape' in event.getKeys():
-        core.quit()
-
     # Fixation cross
     fixation.draw()
     win.flip()
@@ -93,37 +106,29 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
     win.flip()
     core.wait(0.043)  # 43 ms
 
-    # Check for escape key
-    if 'escape' in event.getKeys():
-        core.quit()
-
     # Create two groups of dots
     num_dots_black = random.randint(5, 15)
     num_dots_white = random.randint(5, 15)
 
-    # Determine which color should have the larger/smaller number of dots based on congruence and bigsmall
+    # Adjust number of dots based on congruence and bigsmall
     if congruent:
         if bigsmall_value == 1:
-            # The group of dots matching the prime color should have more dots
             if prime_color == 'black' and num_dots_black < num_dots_white:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
             elif prime_color == 'white' and num_dots_white < num_dots_black:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
         elif bigsmall_value == 0:
-            # The group of dots matching the prime color should have fewer dots
             if prime_color == 'black' and num_dots_black > num_dots_white:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
             elif prime_color == 'white' and num_dots_white > num_dots_black:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
-    else:  # Incongruent condition
+    else:
         if bigsmall_value == 1:
-            # The group of dots matching the prime color should have fewer dots
             if prime_color == 'black' and num_dots_black > num_dots_white:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
             elif prime_color == 'white' and num_dots_white > num_dots_black:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
         elif bigsmall_value == 0:
-            # The group of dots matching the prime color should have more dots
             if prime_color == 'black' and num_dots_black < num_dots_white:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
             elif prime_color == 'white' and num_dots_white < num_dots_black:
@@ -171,51 +176,57 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
 
     return response, reaction_time, accuracy
 
+def run_first():
+    run_instructions(instructions_run_one)
+    # Run the first set of trials
+    for trial in trial_sequence:
+        prime_text = trial['word']
+        opposite_text = trial['opposite']
+        prime_color = trial['prime_color']
+        opposite_color = trial['opposite_color']
+        big_small_value = trial['bigsmall']
+        congruent = trial['congruent'] == 1
+        response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent)
+        trial_data.append((prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, response[0], reaction_time, accuracy, 'first_run'))
 
-# Run the experiment
+def run_second():
+    run_instructions(instructions_run_two)
+    # Run the second set of trials with reversed keys
+    trial_sequence_second_run = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials_second_run')
+    
+    for trial in trial_sequence_second_run:
+        prime_text = trial['word']
+        opposite_text = trial['opposite']
+        prime_color = trial['prime_color']
+        opposite_color = trial['opposite_color']
+        big_small_value = trial['bigsmall']
+        congruent = trial['congruent'] == 1
+        response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, reverse=True)
+        trial_data.append((prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, response[0], reaction_time, accuracy, 'second_run'))
+
+# Run the experiment with counterbalanced order
 logging.console.setLevel(logging.WARNING)
 trial_data = []
 
-# First run instructions and trials
-run_instructions()  
+# Show general instructions first
+show_general_instructions()
 
-for trial in trial_sequence:
-    prime_text = trial['word']
-    opposite_text = trial['opposite']
-    prime_color = trial['prime_color']
-    opposite_color = trial['opposite_color']
-    big_small_value = trial['bigsmall']
-    congruent = trial['congruent'] == 1
-    response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent)
-    trial_data.append((prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, response[0], reaction_time, accuracy, 'first_run'))
+# Randomly choose which run to present first
+if random.choice([True, False]):
+    run_first()
+    show_pause()
+    run_second()
+else:
+    run_second()
+    show_pause()
+    run_first()
 
-# Pause before the second part
-run_pause()
-
-# Second run instructions and trials (reversed keys)
-instructions.setText("Benvenuto/a alla seconda parte dell'esperimento.\n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
-                     "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
-                     "Sei libero/a di abbandonare l'esperimento in qualsiasi momento, prememndo il tasto 'escape'.\n\n"
-                     "Premi un tasto per iniziare.")
-run_instructions()  
-
-trial_sequence_second_run = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials_second_run')
-
-for trial in trial_sequence_second_run:
-    prime_text = trial['word']
-    opposite_text = trial['opposite']
-    prime_color = trial['prime_color']
-    opposite_color = trial['opposite_color']
-    big_small_value = trial['bigsmall']
-    congruent = trial['congruent'] == 1
-    response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, reverse=True)
-    trial_data.append((prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, response[0], reaction_time, accuracy, 'second_run'))
-
-with open('data.csv', 'w') as data_file:
+# Save the data
+with open('data_dots.csv', 'w') as data_file:
     data_file.write('prime,opposite,prime_color,opposite_color,big_small,congruent,response,reaction_time,accuracy,run\n')
     for data_point in trial_data:
         data_file.write(f"{data_point[0]},{data_point[1]},{data_point[2]},{data_point[3]},{data_point[4]},{data_point[5]},{data_point[6]},{data_point[7]:.4f},{data_point[8]}\n")
 
 win.close()
 core.quit()
-
+  
