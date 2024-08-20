@@ -3,6 +3,9 @@ import random
 from psychopy import visual, core, event, logging, data
 import pandas as pd
 
+#asking for participant ID
+participant_id = input("Inserisci l'ID del partecipante: ")  ### to be modified
+
 # Load adjectives
 adjectives = pd.read_excel(r'C:\adjectives.xlsx')
 
@@ -223,7 +226,7 @@ else:
 
 # Save the data
 with open('data_dots.csv', 'w') as data_file:
-    data_file.write('prime,opposite,prime_color,opposite_color,big_small,congruent,response,reaction_time,accuracy,run\n')
+    data_file.write('participant_ID, prime,opposite,prime_color,opposite_color,big_small,congruent,response,reaction_time,accuracy,run\n')
     for data_point in trial_data:
         data_file.write(f"{data_point[0]},{data_point[1]},{data_point[2]},{data_point[3]},{data_point[4]},{data_point[5]},{data_point[6]},{data_point[7]:.4f},{data_point[8]}\n")
 
