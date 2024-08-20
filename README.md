@@ -16,3 +16,4 @@ The second version of this task is similar to Lourenco et al. (2016): the experi
 | Python           | 3.8.19            |
 | Pandas           | 2.0.3             |
 | PsychoPy         | 2024.2.0          |
+| Pillow           | 10.4.0            |
