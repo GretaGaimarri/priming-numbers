@@ -18,3 +18,4 @@ The second version of this task is similar to Lourenco et al. (2016): the experi
 | PsychoPy         | 2024.2.0          |
 | Pillow           | 10.4.0            |
 | Numpy            | 1.24.4            |
+| Statsmodels      | 0.14.1            |

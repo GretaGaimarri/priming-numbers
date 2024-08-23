@@ -1,8 +1,8 @@
-import PIL
+
+
 from PIL import Image, ImageDraw
 import random
 import math
-print(f"Versione di Pillow in uso: {PIL.__version__}")
 
 # image dimension
 width, height = 700, 700 

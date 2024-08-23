@@ -3,6 +3,9 @@ import random
 from psychopy import visual, core, event, logging, data
 import pandas as pd
 
+#asking for participant ID
+participant_id = input("Inserisci l'ID del partecipante: ")  ### to be modified
+
 # Load adjectives
 adjectives = pd.read_excel(r'C:\adjectives.xlsx')
 
@@ -185,9 +188,10 @@ def run_first():
         prime_color = trial['prime_color']
         opposite_color = trial['opposite_color']
         big_small_value = trial['bigsmall']
+        dimension = trial['dimension'] 
         congruent = trial['congruent'] == 1
         response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent)
-        trial_data.append((prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, response[0], reaction_time, accuracy, 'first_run'))
+        trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'first_run'))
 
 def run_second():
     run_instructions(instructions_run_two)
@@ -200,9 +204,10 @@ def run_second():
         prime_color = trial['prime_color']
         opposite_color = trial['opposite_color']
         big_small_value = trial['bigsmall']
+        dimension = trial['dimension'] 
         congruent = trial['congruent'] == 1
         response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, reverse=True)
-        trial_data.append((prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, response[0], reaction_time, accuracy, 'second_run'))
+        trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'second_run'))
 
 # Run the experiment with counterbalanced order
 logging.console.setLevel(logging.WARNING)
@@ -223,7 +228,7 @@ else:
 
 # Save the data
 with open('data_dots.csv', 'w') as data_file:
-    data_file.write('prime,opposite,prime_color,opposite_color,big_small,congruent,response,reaction_time,accuracy,run\n')
+    data_file.write('participant_id, prime,opposite,prime_color,opposite_color,big_small, dimension, congruent,response,reaction_time,accuracy,run\n')
     for data_point in trial_data:
         data_file.write(f"{data_point[0]},{data_point[1]},{data_point[2]},{data_point[3]},{data_point[4]},{data_point[5]},{data_point[6]},{data_point[7]:.4f},{data_point[8]}\n")
 
