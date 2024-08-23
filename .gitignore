@@ -1,0 +1,17 @@
+# System files
+Thumbs.db
+.DS_Store
+*.log
+*.tmp
+*.bak
+
+# Ignore directories
+node_modules/
+venv/
+*.pyc
+__pycache__/
+.env
+
+# IDE-specific
+.vscode/
+.idea/
