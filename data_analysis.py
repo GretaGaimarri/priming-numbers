@@ -15,7 +15,7 @@ filtered_data['log_reaction_time'] = np.log(filtered_data['reaction_time'])
 filtered_data.to_csv('filtered_data_with_log.csv', index=False)
 
 print("Filtrati i dati e calcolato il logaritmo dei tempi di reazione. Risultati salvati in 'filtered_data_with_log.csv'")
-=======
+
 import statsmodels.formula.api as smf
 
 print(f"Versione di NumPy in uso: {np.__version__}")
