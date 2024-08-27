@@ -1,27 +1,43 @@
 
+import os
 import random
+import psychopy
 from psychopy import visual, core, event, logging, data
 import pandas as pd
 
-#asking for participant ID
-participant_id = input("Inserisci l'ID del partecipante: ")  ### to be modified
+# Determina participant ID based on previous data or set it to 1
+data_file_path = 'data_dots.csv'
 
-# Load adjectives
-adjectives = pd.read_excel(r'C:\adjectives.xlsx')
+if os.path.exists(data_file_path):
+    existing_data = pd.read_csv(data_file_path)
+    if 'participant_id' in existing_data.columns:
+        last_participant_id = existing_data['participant_id'].max()
+        participant_id = last_participant_id + 1
+    else:
+        participant_id = 1
+else:
+    participant_id = 1
 
-# Create duplicated trials for each word-opposite pair with color variations
+# Load adjectives file and print it
+adjectives = pd.read_excel(r"C:\Users\greta\my_project\adjectives.xlsx")
+print(adjectives)
+
+# Create duplicated trials for each word-opposite pair with color variations (black and white)
 adjectives_white_word = adjectives.copy()
 adjectives_white_word['prime_color'] = 'white'
 adjectives_white_word['opposite_color'] = 'black'
+
 
 adjectives_black_word = adjectives.copy()
 adjectives_black_word['prime_color'] = 'black'
 adjectives_black_word['opposite_color'] = 'white'
 
-# Combine into one DataFrame
-adjectives_combined = pd.concat([adjectives_white_word, adjectives_black_word])
 
-# Add congruent/incongruent flag (assuming you want both versions)
+# Combine into one dataframe
+adjectives_combined = pd.concat([adjectives_white_word, adjectives_black_word])
+print(adjectives_combined)
+
+# Add congruent/incongruent flag 
 adjectives_congruent = adjectives_combined.copy()
 adjectives_congruent['congruent'] = 1
 
@@ -40,7 +56,7 @@ general_instructions = visual.TextStim(win=win, name='general_instructions',
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
-# Specific Instructions
+# Specific Instructions for two runs (in the second one response buttons are reversed to avoid any possible influence on results)
 instructions_run_one = visual.TextStim(win=win, name='instructions_run_one', 
                                text="Ecco le istruzioni: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
                                     "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
@@ -56,6 +72,11 @@ instructions_run_two = visual.TextStim(win=win, name='instructions_run_two',
                                     "Premi un tasto per iniziare.",
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+pause_text = visual.TextStim(win=win, name='pause_text',
+                             text="Fine prima parte. Puoi fare una breve pausa. Quando sei pronto/a per continuare, premi un tasto qualsiasi.",
+                             font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
+                             color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
 # Fixation cross
 fixation = visual.TextStim(win=win, name='fixation', text='+', font='Arial', pos=(0, 0), height=0.2, wrapWidth=None, ori=0,
@@ -113,7 +134,7 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
     num_dots_black = random.randint(5, 15)
     num_dots_white = random.randint(5, 15)
 
-    # Adjust number of dots based on congruence and bigsmall
+    # Adjust number of dots based on congruence and bigsmall value
     if congruent:
         if bigsmall_value == 1:
             if prime_color == 'black' and num_dots_black < num_dots_white:
@@ -227,8 +248,7 @@ else:
     run_first()
 
 # Save the data
-with open('data_dots.csv', 'w') as data_file:
-    data_file.write('participant_id, prime,opposite,prime_color,opposite_color,big_small, dimension, congruent,response,reaction_time,accuracy,run\n')
+with open('data_dots.csv', 'a') as data_file:
     for data_point in trial_data:
         data_file.write(f"{data_point[0]},{data_point[1]},{data_point[2]},{data_point[3]},{data_point[4]},{data_point[5]},{data_point[6]},{data_point[7]:.4f},{data_point[8]}\n")
 
