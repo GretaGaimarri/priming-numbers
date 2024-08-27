@@ -5,7 +5,7 @@ import psychopy
 from psychopy import visual, core, event, logging, data
 import pandas as pd
 
-# Determina participant ID based on previous data or set it to 1
+# Determine participant ID based on previous data or set it to 1
 data_file_path = 'data_dots.csv'
 
 if os.path.exists(data_file_path):

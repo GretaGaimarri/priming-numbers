@@ -1,60 +1,62 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
+from statsmodels.graphics.regressionplots import plot_partregress_grid
 
-print(f"Versione di NumPy in uso: {np.__version__}")
 
-data = pd.read_csv('data_dots.csv')
+df = pd.read_csv('data_dots.csv')
 
-# filtering the data based on accuracy and limits
-filtered_data = data[(data['accuracy'] == '1') & (data['reaction_time'] > 0.150) & (data['reaction_time'] < 3.000)] #to be defined
+# Filter RTs between 100 and 3000 milliseconds
+df = df[(df['RTs'] > 100) & (df['RTs'] < 3000)]
+
+# How many trials were excluded?
+trials_excluded = len(df[(df['RTs'] <= 100) | (df['RTs'] >= 3000)])
+print(f"Number of trials excluded: {trials_excluded}")
+
+data_db = df.groupby(['ID', 'congruent']).agg(
+    accuracy=('accuracy', 'mean'),
+    sum_resp=('resp', 'sum')
+).reset_index()
+
+# Calculate the mean accuracy
+mean_accuracy = data_db['accuracy'].mean()
+print(f"Mean accuracy: {mean_accuracy}")
+
+# Subset data where accuracy is 1
+df = df[df['accuracy'] == 1]
+
+# How many trials excluded now?
+trials_excluded_now = len(df[df['accuracy'] != 1])
+print(f"Number of trials excluded after filtering for accuracy: {trials_excluded_now}")
 
 # log calculation
-filtered_data['log_reaction_time'] = np.log(filtered_data['reaction_time'])
+df['logRTs'] = np.log(df['reaction_time'])
 
-# saving 
-filtered_data.to_csv('filtered_data_with_log.csv', index=False)
+# Fit the linear mixed model
+m0 = smf.mixedlm("logRTs ~ congruent", data=df, groups=df["ID"], re_formula="~dimension")
+fit_m0 = m0.fit()
 
-print("Filtrati i dati e calcolato il logaritmo dei tempi di reazione. Risultati salvati in 'filtered_data_with_log.csv'")
+# Summary of the model
+print(fit_m0.summary())
 
-import statsmodels.formula.api as smf
+# Add fitted values and residuals to the dataframe
+df['fitted'] = fit_m0.fittedvalues
+df['residuals'] = df['RTs'] - np.exp(df['fitted'])
 
-print(f"Versione di NumPy in uso: {np.__version__}")
+# Plot
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='congruent', y='residuals', data=df, color='black', s=15, label='Partial Residuals')
+sns.lineplot(x='congruent', y='fitted', data=df, color='red', label='Fitted Line')
 
+# Customize plot
+plt.title('Predictor Effects with Partial Residuals')
+plt.xlabel('Congruence')
+plt.ylabel('Log(RTs)')
+plt.grid(True)
+plt.legend()
+plt.show()
 
-data = pd.read_csv('data_dots.csv')
-
-# filtering reaction times
-filtered_data = data[(data['accuracy'] == '1') & (data['reaction_time'] > 0.150) & (data['reaction_time'] < 3.000)]
-
-# log-trasformed reaction times
-filtered_data['log_reaction_time'] = np.log(filtered_data['reaction_time'])
-
-# calculate mean accuracy for each participant
-mean_accuracy_per_participant = filtered_data.groupby('participant_id')['accuracy'].mean()
-
-# adding mean accuracy for each participant
-filtered_data = filtered_data.merge(mean_accuracy_per_participant.rename('mean_accuracy_participant'), on='participant_id')
-
-# Mean accuracy for the total sample
-mean_accuracy_total_sample = filtered_data['accuracy'].mean()
-
-print(f"Media dell'accuratezza per ciascun partecipante:\n{mean_accuracy_per_participant}")
-print(f"Media dell'accuratezza per il campione totale: {mean_accuracy_total_sample}")
-
-# Saving data
-filtered_data.to_csv('filtered_data_with_log.csv', index=False)
-
-# Linear Mixed Model
-
-# Define the mixed effects model
-model = smf.mixedlm("log_reaction_time ~ congruent", 
-                    data=filtered_data, 
-                    groups=filtered_data["participant_id"], 
-                    re_formula="~dimension")
-
-# Fit the model
-result = model.fit()
-
-# Print the summary of the model
-print(result.summary())
 
