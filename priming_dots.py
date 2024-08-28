@@ -4,6 +4,10 @@ import random
 import psychopy
 from psychopy import visual, core, event, logging, data
 import pandas as pd
+import math
+from utility import find_valid_position, create_window
+
+
 
 # Determine participant ID based on previous data or set it to 1
 data_file_path = 'data_dots.csv'
@@ -21,6 +25,7 @@ else:
 # Load adjectives file and print it
 adjectives = pd.read_excel(r"C:\Users\greta\my_project\adjectives.xlsx")
 print(adjectives)
+
 
 # Create duplicated trials for each word-opposite pair with color variations (black and white)
 adjectives_white_word = adjectives.copy()
@@ -46,13 +51,12 @@ adjectives_incongruent['congruent'] = 0
 
 adjectives_combined = pd.concat([adjectives_congruent, adjectives_incongruent])
 
-# Window settings
-win = visual.Window(fullscr=True, screen=0, allowGUI=True, allowStencil=False,
-                    monitor='testMonitor', color=[0, 0, 0], colorSpace='rgb', blendMode='avg', useFBO=True)
+# Window settings in utility
+win = create_window()
 
 # General Instructions
 general_instructions = visual.TextStim(win=win, name='general_instructions', 
-                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nIl compito è divisp in due parti tra le quali ci sarà una breve pausa. \n\nQuando sei pronto/a premi un tasto qualsiasi per leggere le istruzioni.",
+                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nIl compito è diviso in due parti tra le quali ci sarà una breve pausa. \n\nQuando sei pronto/a premi un tasto qualsiasi per leggere le istruzioni.",
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
@@ -130,11 +134,13 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
     win.flip()
     core.wait(0.043)  # 43 ms
 
+    circle_radius = 0.05
+
     # Create two groups of dots
     num_dots_black = random.randint(5, 15)
     num_dots_white = random.randint(5, 15)
 
-    # Adjust number of dots based on congruence and bigsmall value
+        # Adjust number of dots based on congruence and bigsmall value
     if congruent:
         if bigsmall_value == 1:
             if prime_color == 'black' and num_dots_black < num_dots_white:
@@ -158,26 +164,38 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
             elif prime_color == 'white' and num_dots_white < num_dots_black:
                 num_dots_black, num_dots_white = num_dots_white, num_dots_black
 
-    # Recreate the ElementArrayStim after adjusting the number of elements
+
+    positions_black = []
+    for _ in range(num_dots_black):
+        x, y = find_valid_position(circle_radius, positions_black)
+        positions_black.append((x, y))
+
     dots_black = visual.ElementArrayStim(
         win=win,
         nElements=num_dots_black,
         elementTex=None,
         elementMask='circle',
-        xys=[(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5)) for _ in range(num_dots_black)],
-        sizes=0.05,
+        xys=positions_black,
+        sizes=circle_radius * 2, 
         colors='black'
     )
+
     
+    positions_white = []
+    for _ in range(num_dots_white):
+        x, y = find_valid_position(circle_radius, positions_black + positions_white)  
+        positions_white.append((x, y))
+
     dots_white = visual.ElementArrayStim(
         win=win,
         nElements=num_dots_white,
         elementTex=None,
         elementMask='circle',
-        xys=[(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5)) for _ in range(num_dots_white)],
-        sizes=0.05,
+        xys=positions_white,
+        sizes=circle_radius * 2,  
         colors='white'
     )
+
 
     # Display the dots
     dots_black.draw()
@@ -194,8 +212,12 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
         core.quit()
     reaction_time = rt_clock.getTime()  # Get the time since the dots appeared
 
-    # Determine accuracy
-    correct_response = 't' if num_dots_white > num_dots_black else 'v'
+    # Determine accuracy based on the `reverse` parameter
+    if reverse:
+        correct_response = 'v' if num_dots_white > num_dots_black else 't'
+    else:
+        correct_response = 't' if num_dots_white > num_dots_black else 'v'
+
     accuracy = '1' if response[0] == correct_response else '0'
 
     return response, reaction_time, accuracy
@@ -227,7 +249,7 @@ def run_second():
         big_small_value = trial['bigsmall']
         dimension = trial['dimension'] 
         congruent = trial['congruent'] == 1
-        response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, reverse=True)
+        response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, reverse=True) #reverse true to invert the accuracy method 
         trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'second_run'))
 
 # Run the experiment with counterbalanced order

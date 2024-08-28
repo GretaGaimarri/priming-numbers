@@ -9,11 +9,15 @@ from statsmodels.graphics.regressionplots import plot_partregress_grid
 
 df = pd.read_csv('data_dots.csv')
 
+# Convert reaction times to milliseconds
+df['reaction_time'] = df['reaction_time'] * 1000
+
+
 # Filter RTs between 100 and 3000 milliseconds
-df = df[(df['RTs'] > 100) & (df['RTs'] < 3000)]
+df = df[(df['reaction_time'] > 100) & (df['reaction_time'] < 3000)]
 
 # How many trials were excluded?
-trials_excluded = len(df[(df['RTs'] <= 100) | (df['RTs'] >= 3000)])
+trials_excluded = len(df[(df['reaction_time'] <= 100) | (df['reaction_time'] >= 3000)])
 print(f"Number of trials excluded: {trials_excluded}")
 
 data_db = df.groupby(['ID', 'congruent']).agg(
@@ -44,7 +48,7 @@ print(fit_m0.summary())
 
 # Add fitted values and residuals to the dataframe
 df['fitted'] = fit_m0.fittedvalues
-df['residuals'] = df['RTs'] - np.exp(df['fitted'])
+df['residuals'] = df['reaction_time'] - np.exp(df['fitted'])
 
 # Plot
 plt.figure(figsize=(10, 6))
