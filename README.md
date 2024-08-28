@@ -50,4 +50,10 @@ The `adjectives.xlsx` file provides a list of scalar adjectives used in the expe
 
 This file is crucial for generating the randomized trials and displaying the appropriate stimuli to participants.
 
+### References
+
+- Dehaene, S., Bossini, S., & Giraux, P. (1993). The mental representation of parity and number magnitude. *Journal of Experimental Psychology: General, 122*(3), 371–396.
+- Kochari, A. R., & Schriefers, H. (2022). The role of the Generalized Magnitude System in linguistic processing. *Journal of Cognitive Neuroscience*.
+- Lourenco, S. F., Bonny, J. W., Fernandez, E. P., & Rao, S. (2016). Nonsymbolic number and cumulative area representations contribute shared and unique variance to symbolic math competence. *Proceedings of the National Academy of Sciences, 113*(42), 11366-11371.
+- Walsh, V. (2003). A theory of magnitude: Common cortical metrics of time, space, and quantity. *Trends in Cognitive Sciences, 7*(11), 483-488.
 
