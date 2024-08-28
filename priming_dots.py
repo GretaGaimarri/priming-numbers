@@ -9,9 +9,8 @@ from utility import find_valid_position, create_window, get_general_instructions
 
 
 
-# Determine participant ID based on previous data or set it to 1
+# Determine participant ID based on previous data or set it to 1 (see utility)
 data_file_path = 'data_dots.csv'
-
 participant_id = get_next_participant_id(data_file_path)
 
 # Load adjectives file and print it
