@@ -19,3 +19,8 @@ The second version of this task is similar to Lourenco et al. (2016): the experi
 | Pillow           | 10.4.0            |
 | Numpy            | 1.24.4            |
 | Statsmodels      | 0.14.1            |
+
+
+## Utility Module
+
+The `utility.py` file is a module that provides helper functions for various tasks needed during the experiment, such as creating the PsychoPy window, generating instruction text, and determining participant IDs.
