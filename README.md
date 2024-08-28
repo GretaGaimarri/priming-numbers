@@ -25,6 +25,10 @@ The second version of this task is similar to Lourenco et al. (2016): the experi
 
 The `utility.py` file is a module that provides helper functions for various tasks needed during the experiment, such as creating the PsychoPy window, generating instruction text, and determining participant IDs.
 
+### 'creating_stimuli.py'
+
+This script leads to the creation of stimuli for the task in ####priming_dots.py. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
+
 ## Data Files
 
 ### `adjectives.xlsx`
@@ -38,3 +42,5 @@ The `adjectives.xlsx` file provides a list of scalar adjectives used in the expe
 - `bigsmall`: Indicator for grouping based on concept size.
 
 This file is crucial for generating the randomized trials and displaying the appropriate stimuli to participants.
+
+
