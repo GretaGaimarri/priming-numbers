@@ -26,8 +26,7 @@ num_black_circles = 20
 radius = 20
 
 positions = []
-
-        
+       
 
 # white circles
 for _ in range(num_white_circles):
