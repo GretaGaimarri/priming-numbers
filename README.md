@@ -27,7 +27,7 @@ The `utility.py` file is a module that provides helper functions for various tas
 
 ### 'creating_stimuli.py'
 
-This script leads to the creation of stimuli for the task in ###priming_dots.py. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
+This script leads to the creation of stimuli for the task in 'priming_dots.py'. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
 
 ## Data Files
 
