@@ -126,7 +126,9 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
     num_dots_black = random.randint(5, 15)
     num_dots_white = random.randint(5, 15)
 
-        # Adjust number of dots based on congruence and bigsmall value
+        # Adjust the number of dots based on congruence and bigsmall value
+        # The primary purpose of this code is to ensure that the number of black and white dots presented to the participant is consistent with the experiment's "congruent" or "incongruent" condition. 
+        # It manipulates the visual stimuli so that it fits the experimental design: in the congruent condition, the color of the dots matches the prime's magnitude cue (e.g., "more" if the prime is big and "less" if the prime is small). In the incongruent condition, the color of the dots is the opposite of the prime's magnitude cue.
     if congruent:
         if bigsmall_value == 1:
             if prime_color == 'black' and num_dots_black < num_dots_white:
@@ -220,7 +222,7 @@ def run_first():
         dimension = trial['dimension'] 
         congruent = trial['congruent'] == 1
         response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent)
-        trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'first_run'))
+        trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'first_run')) #information that should be saved in the csv with results
 
 def run_second():
     run_instructions(instructions_run_two)
@@ -236,9 +238,8 @@ def run_second():
         dimension = trial['dimension'] 
         congruent = trial['congruent'] == 1
         response, reaction_time, accuracy = run_trial(prime_text, opposite_text, prime_color, opposite_color, big_small_value, congruent, reverse=True) #reverse true to invert the accuracy method 
-        trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'second_run'))
+        trial_data.append((participant_id, prime_text, opposite_text, prime_color, opposite_color, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'second_run')) #information that should be saved in the csv with results
 
-# Run the experiment with counterbalanced order
 logging.console.setLevel(logging.WARNING)
 trial_data = []
 
