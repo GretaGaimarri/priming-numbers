@@ -28,7 +28,7 @@ The second version of this task is similar to Lourenco et al. (2016): the experi
 
 - **data_analysis.py**: A Python script that analyzes the experimental data collected from participants. It performs statistical tests, such as linear mixed models and t-tests, to evaluate the effects of different conditions (congruent/incongruent) on reaction times and accuracy.
 
-- **creating_stimuli.py**: This script leads to generate and visualize stimuli for the experiment in 'priming_dots.py'. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
+- **creating_stimuli.py**: This script leads to generate and visualize stimuli for the experiment in `priming_dots.py`. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
 
 
 ## Utility Module
