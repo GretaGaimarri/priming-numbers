@@ -25,9 +25,13 @@ The second version of this task is similar to Lourenco et al. (2016): the experi
 
 The `utility.py` file is a module that provides helper functions for various tasks needed during the experiment, such as creating the PsychoPy window, generating instruction text, and determining participant IDs.
 
-### 'creating_stimuli.py'
+- **numerical_priming.py**: A Python script focused on running the numerical priming tasks. This script sets up a classification experiment, presents stimuli, records participant responses, and saves the data for further analysis.
 
-This script leads to the creation of stimuli for the task in 'priming_dots.py'. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
+- **priming_dots.py**: The main Python script to run the dot priming experiment. It includes the logic for presenting the dots in different conditions (e.g., congruent, incongruent), handling participant responses, and recording data like reaction times and accuracy.
+
+- **data_analysis.py**: A Python script that analyzes the experimental data collected from participants. It performs statistical tests, such as linear mixed models and t-tests, to evaluate the effects of different conditions (congruent/incongruent) on reaction times and accuracy.
+
+- **creating_stimuli.py**: This script leads to generate and visualize stimuli for the experiment in 'priming_dots.py'. In this case it is not used, and the groups of dots are randomly created. However, controlling for the number of dots and having specific defined stimuli/images could be useful in some circumstances.
 
 ## Data Files
 
