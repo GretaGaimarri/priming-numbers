@@ -1,5 +1,5 @@
 
-# Scalar Adjective Priming Task
+# Scalar Adjectives Priming Task
 
 This project involves a priming task where the primes are scalar adjectives and the targets are symbolic or non-symbolic quantities. The objective is to investigate the potential relationship between these words and the generalized quantity mechanism.
 
