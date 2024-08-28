@@ -4,6 +4,27 @@ from psychopy import visual, core, event
 import math
 import random
 
+def get_next_participant_id(data_file_path):
+    """
+    Determines the next participant ID based on the existing data or sets it to 1 if no data exists.
+    
+    Args:
+        data_file_path (str): The file path to the data CSV file.
+        
+    Returns:
+        int: The next participant ID.
+    """
+    if os.path.exists(data_file_path):
+        existing_data = pd.read_csv(data_file_path)
+        if 'participant_id' in existing_data.columns:
+            last_participant_id = existing_data['participant_id'].max()
+            return last_participant_id + 1
+        else:
+            return 1
+    else:
+        return 1
+    
+
 def load_adjectives(filepath):
     """Load the adjectives from an Excel file and create congruent and incongruent datasets."""
     adjectives = pd.read_excel(filepath)
@@ -20,6 +41,20 @@ def create_window():
     return visual.Window(fullscr=True, screen=0, allowGUI=True, allowStencil=False,
                          monitor='testMonitor', color=[0, 0, 0], colorSpace='rgb', blendMode='avg', useFBO=True)
 
+def get_general_instructions(win):
+    """ Define general instructions for the experiments"""
+    return visual.TextStim(win=win, name='general_instructions', 
+                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nIl compito è diviso in due parti tra le quali ci sarà una breve pausa. \n\nQuando sei pronto/a premi un tasto qualsiasi per leggere le istruzioni.",
+                               font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
+                               color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+def get_pause(win):
+    """ Define the pause """
+    return visual.TextStim(win=win, name='pause_text',
+                             text="Fine prima parte. Puoi fare una breve pausa. Quando sei pronto/a per continuare, premi un tasto qualsiasi.",
+                             font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
+                             color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+    
 def circles_overlap(x1, y1, x2, y2, radius):
     """
     Check if two circles overlap based on their center coordinates and radius.

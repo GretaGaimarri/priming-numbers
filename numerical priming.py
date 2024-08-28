@@ -2,33 +2,42 @@
 from psychopy import visual, core, event, logging, data
 import pandas as pd
 import random
+from utility import load_adjectives, create_window, get_general_instructions, get_next_participant_id, get_pause
+
+
+# Determine participant ID based on previous data or set it to 1
+data_file_path = 'data.csv'
+
+participant_id = get_next_participant_id(data_file_path)
 
 # Load adjectives
-adjectives = pd.read_excel(r'C:\adjectives.xlsx')
-adjectives_congruent = adjectives.copy()
-adjectives_congruent['congruent'] = 1
+adjectives_combined = load_adjectives(r"C:\Users\greta\my_project\adjectives.xlsx")
+print(adjectives_combined)
 
-adjectives_incongruent = adjectives.copy()
-adjectives_incongruent['congruent'] = 0
-
-adjectives_combined = pd.concat([adjectives_congruent, adjectives_incongruent])
-
-# Window settings
-win = visual.Window(fullscr=True, screen=0, allowGUI=True, allowStencil=False,
-                    monitor='testMonitor', color=[0, 0, 0], colorSpace='rgb', blendMode='avg', useFBO=True)
+# Window settings in utility
+win = create_window()
 
 # Instructions, Puase, Fixation cross, prime and target
-instructions = visual.TextStim(win=win, name='instructions', 
-                               text="Benvenuto/a all'esperimento.\n\nPremi 't' se pensi che il numero sia maggiore di 5.\n"
-                                    "Premi 'v' se pensi che il numero sia minore di 5.\n\n"
-                                    "Sei libero/a di abbandonare l'esperimento in qualsiasi momento, prememndo il tasto 'escape'.\n\n"
-                                    "Premi un tasto per iniziare.",
+general_instructions = get_general_instructions(win)
+# Specific Instructions for two runs (in the second one response buttons are reversed to avoid any possible influence on results)
+instructions_run_one = visual.TextStim(win=win, name='instructions_run_one', 
+                               text="Ecco le istruzioni: \n\n Sullo schermo appariranno dei numeri da 1 a 9. \n\nPremi 't' se pensi che il numero sia minore di 5.\n"
+                                    "Premi 'v' se pensi che il numero sia maggiore di 5.\n\n"
+                                    "Ricorda che sei libero/a di abbandonare l'esperimento in qualsiasi momento, premendo il tasto 'escape'.\n\n"
+                                    "Premi un tasto qualsiasi per iniziare.",
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
-pause_text = visual.TextStim(win=win, name='pause_text',
-                             text="Fine prima parte.\n\n" "Premi un qualsiasi pulsante per iniziare la seconda parte dell'esperimento.",
-                             font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
-                             color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+instructions_run_two = visual.TextStim(win=win, name='instructions_run_two', 
+                               text="Sullo schermo appariranno dei numeri da 1 a 9. \n\nPremi 'v' se pensi che il numero sia minore di 5.\n"
+                                    "Premi 't' se pensi che il numero sia maggiore di 5.\n\n"
+                                    "Ricorda che sei libero/a di abbandonare l'esperimento in qualsiasi momento, premendo il tasto 'escape'.\n\n"
+                                    "Premi un tasto qualsiasi per iniziare.",
+                               font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
+                               color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+
+pause_text = get_pause(win)
+
 fixation = visual.TextStim(win=win, name='fixation', text='+', font='Arial', pos=(0, 0), height=0.2, wrapWidth=None, ori=0,
                            color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 prime = visual.TextStim(win=win, name='prime', text='', font='Arial', pos=(0, 0), height=0.2, wrapWidth=None, ori=0,
@@ -39,19 +48,27 @@ number_stim = visual.TextStim(win=win, name='number', text='', font='Arial', pos
 
 trial_sequence = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials')
 
-def run_instructions():
+def show_general_instructions():
+    general_instructions.draw()
+    win.flip()
+    keys = event.waitKeys()
+    if 'escape' in keys:
+        core.quit()
+
+def run_instructions(instructions):
     instructions.draw()
     win.flip()
     keys = event.waitKeys() 
     if 'escape' in keys:
         core.quit()
 
-def run_pause():
+def show_pause():
     pause_text.draw()
     win.flip()
-    keys = event.waitKeys()  
+    keys = event.waitKeys()
     if 'escape' in keys:
         core.quit()
+
 
 def run_trial(prime_text, bigsmall_value, congruent, reverse=False):
     # Check for escape key
@@ -115,39 +132,49 @@ def run_trial(prime_text, bigsmall_value, congruent, reverse=False):
 
     return response, reaction_time, accuracy
 
+def run_first():
+    run_instructions(instructions_run_one)
+    # Run the first set of trials
+    for trial in trial_sequence:
+        prime_text = trial['word']
+        big_small_value = trial['bigsmall']
+        dimension = trial['dimension'] 
+        congruent = trial['congruent'] == 1
+        response, reaction_time, accuracy = run_trial(prime_text, big_small_value, congruent)
+        trial_data.append((participant_id, prime_text, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'first_run'))
+
+def run_second():
+    run_instructions(instructions_run_two)
+    # Run the second set of trials with reversed keys
+    trial_sequence_second_run = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials_second_run')
+    
+    for trial in trial_sequence_second_run:
+        prime_text = trial['word']
+        big_small_value = trial['bigsmall']
+        dimension = trial['dimension'] 
+        congruent = trial['congruent'] == 1
+        response, reaction_time, accuracy = run_trial(prime_text, big_small_value, congruent, reverse=True) #reverse true to invert the accuracy method 
+        trial_data.append((participant_id, prime_text, big_small_value, dimension, congruent, response[0], reaction_time, accuracy, 'second_run'))
+
 # Run the experiment
 logging.console.setLevel(logging.WARNING)
 trial_data = []
 
-# First run instructions and trials
-run_instructions()  
 
-for trial in trial_sequence:
-    prime_text = trial['word']
-    big_small_value = trial['bigsmall']
-    congruent = trial['congruent'] == 1
-    response, reaction_time, accuracy = run_trial(prime_text, big_small_value, congruent)
-    trial_data.append((prime_text, big_small_value, congruent, response[0], reaction_time, accuracy, 'first_run'))
+# Show general instructions first
+show_general_instructions()
 
-# Pause before the second part
-run_pause()
-
-# Second run instructions and trials (reversed keys)
-instructions.setText("Benvenuto/a alla seconda parte dell'esperimento.\n\nPremi 't' se pensi che il numero sia minore di 5.\n"
-                     "Premi 'v' se pensi che il numero sia maggiore di 5.\n\n"
-                     "Sei libero/a di abbandonare l'esperimento in qualsiasi momento, prememndo il tasto 'escape'.\n\n"
-                     "Premi un tasto per iniziare.")
-run_instructions()  
+# Randomly choose which run to present first
+if random.choice([True, False]):
+    run_first()
+    show_pause()
+    run_second()
+else:
+    run_second()
+    show_pause()
+    run_first()
 
 
-trial_sequence_second_run = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials_second_run')
-
-for trial in trial_sequence_second_run:
-    prime_text = trial['word']
-    big_small_value = trial['bigsmall']
-    congruent = trial['congruent'] == 1
-    response, reaction_time, accuracy = run_trial(prime_text, big_small_value, congruent, reverse=True)
-    trial_data.append((prime_text, big_small_value, congruent, response[0], reaction_time, accuracy, 'second_run'))
 
 with open('data.csv', 'w') as data_file:
     data_file.write('prime,big_small,congruent,response,reaction_time,accuracy,number,run\n')

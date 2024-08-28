@@ -5,22 +5,14 @@ import psychopy
 from psychopy import visual, core, event, logging, data
 import pandas as pd
 import math
-from utility import find_valid_position, create_window
+from utility import find_valid_position, create_window, get_general_instructions, get_next_participant_id, get_pause
 
 
 
 # Determine participant ID based on previous data or set it to 1
 data_file_path = 'data_dots.csv'
 
-if os.path.exists(data_file_path):
-    existing_data = pd.read_csv(data_file_path)
-    if 'participant_id' in existing_data.columns:
-        last_participant_id = existing_data['participant_id'].max()
-        participant_id = last_participant_id + 1
-    else:
-        participant_id = 1
-else:
-    participant_id = 1
+participant_id = get_next_participant_id(data_file_path)
 
 # Load adjectives file and print it
 adjectives = pd.read_excel(r"C:\Users\greta\my_project\adjectives.xlsx")
@@ -54,11 +46,8 @@ adjectives_combined = pd.concat([adjectives_congruent, adjectives_incongruent])
 # Window settings in utility
 win = create_window()
 
-# General Instructions
-general_instructions = visual.TextStim(win=win, name='general_instructions', 
-                               text="Grazie per aver scelto di partecipare all'esperimento. \n\nIl compito è diviso in due parti tra le quali ci sarà una breve pausa. \n\nQuando sei pronto/a premi un tasto qualsiasi per leggere le istruzioni.",
-                               font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
-                               color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+# General Instructions in utility
+general_instructions = get_general_instructions(win)
 
 # Specific Instructions for two runs (in the second one response buttons are reversed to avoid any possible influence on results)
 instructions_run_one = visual.TextStim(win=win, name='instructions_run_one', 
@@ -77,10 +66,7 @@ instructions_run_two = visual.TextStim(win=win, name='instructions_run_two',
                                font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
                                color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
 
-pause_text = visual.TextStim(win=win, name='pause_text',
-                             text="Fine prima parte. Puoi fare una breve pausa. Quando sei pronto/a per continuare, premi un tasto qualsiasi.",
-                             font='Arial', pos=(0, 0), height=0.1, wrapWidth=1.5, ori=0,
-                             color='white', colorSpace='rgb', opacity=1, languageStyle='LTR', depth=0.0)
+pause_text = get_pause(win)
 
 # Fixation cross
 fixation = visual.TextStim(win=win, name='fixation', text='+', font='Arial', pos=(0, 0), height=0.2, wrapWidth=None, ori=0,
