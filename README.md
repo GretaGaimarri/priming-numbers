@@ -51,6 +51,7 @@ The `adjectives.xlsx` file provides a list of scalar adjectives used in the expe
 - `word`: The prime adjective.
 - `dimension`: The category or dimension of the adjective.
 - `bigsmall`: Indicator for grouping based on concept size.
+- `opposite` : Opposite adjective (i.e., low-magnitude version of an adjective referring to high-magnitude, or high-magnitude version of an adjective referring to low-magnitude)
 
 This file is crucial for generating the randomized trials and displaying the appropriate stimuli to participants.
 
