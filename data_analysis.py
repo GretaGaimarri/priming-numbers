@@ -13,6 +13,7 @@ df = pd.read_csv('data_dots.csv')
 df['reaction_time'] = df['reaction_time'] * 1000
 
 
+# LP: I would recomment specifying parameters for all thos "magic numbers" in the code
 # Filter RTs between 100 and 3000 milliseconds
 df = df[(df['reaction_time'] > 100) & (df['reaction_time'] < 3000)]
 

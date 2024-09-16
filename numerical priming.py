@@ -17,6 +17,9 @@ print(adjectives_combined)
 # Window settings in utility
 win = create_window()
 
+
+# LP: there is a lot of this code that is duplicated from priming_dots.py. You could consider moving it to a function,
+# where all the lines that are precisely identical appear only once
 # Instructions, Puase, Fixation cross, prime and target
 general_instructions = get_general_instructions(win)
 # Specific Instructions for two runs (in the second one response buttons are reversed to avoid any possible influence on results)
@@ -48,6 +51,9 @@ number_stim = visual.TextStim(win=win, name='number', text='', font='Arial', pos
 
 trial_sequence = data.TrialHandler(nReps=1, method='random', trialList=adjectives_combined.to_dict('records'), seed=None, name='trials')
 
+
+# LP: same here, basicaly general structure is the same as in priming_dots.py, so you could make a single
+# script that keeps together most of the experiment and change only the parts that are different
 def show_general_instructions():
     general_instructions.draw()
     win.flip()
