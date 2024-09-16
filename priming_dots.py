@@ -49,6 +49,8 @@ win = create_window()
 general_instructions = get_general_instructions(win)
 
 # Specific Instructions for two runs (in the second one response buttons are reversed to avoid any possible influence on results)
+# LP: parameters should have been specified beforehand so that the same variables (eg for height) are used in all instructions.
+# Also the common parts of the text could have been a single variable
 instructions_run_one = visual.TextStim(win=win, name='instructions_run_one', 
                                text="Ecco le istruzioni: \n\nDue gruppi di pallini (neri e bianchi) appariranno sullo schermo. \n\nPremi 't' se pensi che il gruppo di punti più numeroso sia bianco.\n"
                                     "Premi 'v' se pensi che il gruppo di punti più numeroso sia nero.\n\n"
@@ -117,11 +119,12 @@ def run_trial(prime_text, opposite_text, prime_color, opposite_color, bigsmall_v
     prime_top.draw()
     prime_bottom.draw()
     win.flip()
-    core.wait(0.043)  # 43 ms
+    core.wait(0.043)  # 43 ms  # LP: another parameter
 
     circle_radius = 0.05
 
     # Create two groups of dots
+    # LP: Thos se should have been parameters
     num_dots_black = random.randint(5, 15)
     num_dots_white = random.randint(5, 15)
 

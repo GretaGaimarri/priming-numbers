@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from psychopy import visual, core, event
+from psychopy import visual, core, event  # LP: some unused imports here
 import math
 import random
 
